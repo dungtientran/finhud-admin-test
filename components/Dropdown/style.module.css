@@ -1,0 +1,45 @@
+.dropdown_checkbox_container {
+    position: relative;
+}
+
+.dropdown_checkbox_title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+    width: 300px;
+    height: 40px;
+    border: 1px solid #D9D9D9;
+}
+.dropdown_checkbox_title div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.dropdown_checkbox_title span {
+    font-size: 14px;
+    font-weight: 500;
+    color: #000000;
+}
+.dropdown_checkbox_box {
+    position: absolute;
+    width: 100%;
+    z-index: 10;
+    border: 1px solid #D9D9D9;
+    background-color: #FFFFFF;
+}
+.dropdown_checkbox_box li {
+    padding: 8px;
+}
+.dropdown_checkbox_box li label::before {
+    margin-right: 15px !important;
+}
+.dropdown_checkbox_box li label {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: #000000 !important;
+}
+
+.dropdown_checkbox_box li:hover {
+    background-color: var(--orange);
+}

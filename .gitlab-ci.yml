@@ -1,0 +1,41 @@
+image: node:14.18.2
+
+stages:          # List of stages for jobs, and their order of execution
+  - test
+  - deploy
+
+sonarqube-check:
+  stage: test
+  image: 
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script: 
+    - sonar-scanner
+  allow_failure: true
+  only:
+    - main
+
+deploy-job:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  image: alpine
+  environment: production
+  before_script:
+    - apk add openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  script:
+    - echo "Deploying application..."
+    - ssh -o StrictHostKeyChecking=no ubuntu@$EC2_ADDRESS "git clone git@gitlab.com:finhub1/finhub-admin.git || true"
+    - ssh -o StrictHostKeyChecking=no ubuntu@$EC2_ADDRESS "cd finhub-admin && git branch && git pull origin main && git checkout main"
+    - ssh -o StrictHostKeyChecking=no ubuntu@$EC2_ADDRESS "cd finhub-admin && npm install"
+    - ssh -o StrictHostKeyChecking=no ubuntu@$EC2_ADDRESS "cd finhub-admin && npm run build"
+    - ssh -o StrictHostKeyChecking=no ubuntu@$EC2_ADDRESS "cd finhub-admin && pm2 startOrRestart spinup.json"

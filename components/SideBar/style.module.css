@@ -1,0 +1,23 @@
+.side-bar {
+    height: 100%;
+}
+
+.side-bar-head {
+    border-bottom: 1px solid #F9F9FB;
+    padding: 30px 36px;
+    max-height: 100px;
+}
+
+.side-bar-title {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0;
+}
+
+.side-bar-menu {
+    padding-left: 17px;
+    height: 'auto';
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+}

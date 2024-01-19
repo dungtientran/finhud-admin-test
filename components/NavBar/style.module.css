@@ -1,0 +1,108 @@
+.navbar {
+    width: 100%;
+    padding: 30px 36px;
+    display: flex;
+    justify-content: space-between;
+    max-height: 100px;
+}
+.navbar-left {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.navbar-title {
+    font-size:24px;
+    color: var(--text);
+    font-weight: 500;
+    margin-bottom: 0;
+    height: 30px;
+    min-width: 200px;
+    padding-right: 20px;
+    border-right:  1px solid #DADADA;
+}
+.navbar-search-box{
+    display: flex;
+    align-items: center;
+    padding-left: 32px;
+}
+.navbar-search-icon{
+    font-size: 20px;
+}
+.navbar-search-input{
+    background: none;
+    outline: none;
+    border: none;
+    margin-left: 16px;
+    font-size: 16px;    
+}
+.navbar-right{
+    display: flex;
+    align-items: center;
+}
+.navbar-notification{
+    margin-right: 56px;
+    position: relative;
+}
+.navbar-notification::before {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #D94545;
+    top: -1px;
+    right: -4px;
+}
+.navbar-notification-icon{
+    font-size: 24px;
+    color: #cccccc;
+    
+}
+.navbar-account{
+    display: flex;
+    align-self: center;
+}
+.account-info{
+    margin-right: 12px;
+    padding-top: 2px;
+}
+.account-avatar{
+    border-radius: 50%;
+}
+.account-more {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+.chevron-down {
+    font-size: 20px;
+    cursor: pointer;
+    width: 40px;
+    color: var(--text);
+}
+.account-options {
+    position: absolute;
+    width: 168px;
+    right: 0;
+    top: 100%;
+    margin-bottom: 0;
+    background: #FFFFFF;
+    border: 0.5px solid #DADADA
+}
+.account-option {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+    cursor: pointer;
+}
+.account-option:hover {
+    background-color: var(--orange);
+    color: #fff;
+}
+
+@media (max-width: 1528px) {
+    .navbar {
+      width: 1240px;
+    }
+  }

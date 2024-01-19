@@ -1,0 +1,46 @@
+.v-checkbox {
+  border: 0 none transparent;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  height: 100%;
+}
+.v-checkbox > .field {
+  display: none;
+}
+.v-checkbox > .label {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  color: #4c5264;
+  cursor: pointer;
+  width: 100%;
+}
+.v-checkbox > .label::before {
+  content: "";
+  box-sizing: border-box;
+  display: block;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  border: 2px solid #4c5264;
+  transition: transform 0.75s ease-out;
+  
+}
+.v-checkbox > .field:checked + .label::before {
+  background-image: url("../../asset/icon/checked.svg");
+  background-size: 12px 10px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.v-checkbox > .field:active + .label::before {
+  transform: scale(1.1);
+  transition: transform 0.05s ease-in;
+}
+.v-checkbox:hover > .label {
+  color: #fff;
+}
+
+.v-checkbox:hover > .label::before {
+  border: 2px solid #fff;
+}

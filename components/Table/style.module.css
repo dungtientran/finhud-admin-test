@@ -1,0 +1,49 @@
+.table-wr {
+    width: 100%;
+    background: #FFFFFF;
+    border: 1px solid rgba(189, 189, 189, 0.25);
+    box-shadow: 0px 4.71062px 23.5531px rgba(0, 0, 0, 0.07);
+    border-radius: 4.71062px;
+    padding: 10px 15px;
+}
+
+.table {
+    width: 100%;
+
+}
+
+.table-tr {
+    height: 45px;
+}
+
+.table-tr:not(:last-child) {
+    border-bottom: 0.626846px solid #E0E0E0;
+}
+
+.table-th {
+    text-align: left;
+}
+
+.table-td {}
+
+.name {
+    color: #1751F0;
+}
+
+.table-more-option {
+    color: #666666;
+    cursor: pointer;
+    font-size: 28px;
+}
+
+.pending {
+    color: var(--orange);
+}
+
+.done {
+    color: var(--green);
+}
+
+.reject {
+    color: var(--red);
+}

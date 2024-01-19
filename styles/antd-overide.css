@@ -1,0 +1,140 @@
+.ant-menu-title-content {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.ant-menu-submenu-title {
+    height: 70px !important;
+    border-bottom: 1px solid #F9F9FB;
+}
+
+.ant-menu-item {
+    height: 70px !important;
+}
+
+.ant-menu.ant-menu-sub.ant-menu-inline .ant-menu-title-content {
+    font-size: 16px;
+    color: var(--text);
+    font-weight: 400;
+}
+
+.ant-menu.ant-menu-sub.ant-menu-inline {
+    background-color: #fff !important;
+}
+
+.ant-menu.ant-menu-sub.ant-menu-inline li {
+    height: 80px;
+}
+
+/* menu item selected */
+.ant-menu.ant-menu-root .ant-menu-submenu.ant-menu-submenu-selected svg,
+.ant-menu.ant-menu-root .ant-menu-submenu.ant-menu-submenu-inline.ant-menu-submenu-selected i {
+    color: var(--text) !important;
+}
+
+/* sub menu selected */
+.ant-menu.ant-menu-sub .ant-menu-item.ant-menu-item-selected {
+    background: #EFEFEF;
+    position: relative;
+    border-radius: 0px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+
+}
+
+.ant-menu-item.ant-menu-item-selected {
+    background: #EFEFEF;
+    position: relative;
+    border-radius: 0px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.ant-menu-item.ant-menu-item-selected::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 17px;
+    top: 0;
+    left: 0;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    background-color: #003443;
+}
+
+.ant-menu-item.ant-menu-item-selected svg {
+    color: #000 !important;
+}
+
+.ant-menu.ant-menu-sub .ant-menu-item.ant-menu-item-selected svg {
+    color: var(--text) !important;
+}
+
+.ant-menu.ant-menu-sub .ant-menu-item.ant-menu-item-selected::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 17px;
+    top: 0;
+    left: 0;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    background-color: var(--orange);
+}
+
+.ant-steps-item-title,
+.ant-steps-item-subtitle,
+.ant-steps-item-description {
+    font-size: 14px !important;
+    color: #000 !important;
+    font-weight: 500 !important;
+}
+
+.ant-steps-item-content {
+    width: 160px !important;
+}
+
+.ant-steps-item-icon {
+    display: inline-block;
+    margin-inline-start: 60px !important;
+}
+
+.ant-steps-item-tail {
+    margin-inline-start: 80px !important;
+}
+
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: var(--orange) !important;
+}
+
+.ant-tabs-tab:hover {
+    color: var(--orange) !important;
+}
+
+.ant-tabs-ink-bar.ant-tabs-ink-bar-animated {
+    background-color: var(--orange) !important;
+}
+
+.ant-skeleton.ant-skeleton-element.ant-skeleton-active {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 16px !important;
+}
+
+span.ant-skeleton-input.ant-skeleton-input-lg.skeleton-item {
+    display: block !important;
+    width: 100% !important;
+}
+
+.ant-modal-footer {
+    display: none !important;
+}
+
+.ant-modal-content {
+    width: 739px !important;
+    margin: 0 auto !important;
+    background-color: #F5FCFA !important;
+    border-radius: 0 !important;
+    border: 1px solid #333333 !important;
+}

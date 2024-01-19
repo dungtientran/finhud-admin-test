@@ -1,0 +1,14 @@
+.main {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.row {
+    height: 100%;
+}
+
+.content {
+    height: 100%;
+    overflow-y: auto;
+    background: #F9F9F9;
+}

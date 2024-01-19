@@ -1,0 +1,212 @@
+.sort {
+    display: flex;
+    align-items: center;
+}
+
+.select-box {
+    cursor: pointer;
+    display: flex;
+    /* border-left: 1px solid #DADADA; */
+    /* border-right: 1px solid #DADADA; */
+    border: 1px solid #DADADA;
+    margin-left: 50px;
+    height: 42px;
+    align-items: center;
+    border-radius: 4px;
+}
+
+.select {
+    background: none;
+    width: 192px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    /* border-top: 1px solid #DADADA; */
+    /* border-bottom: 1px solid #DADADA; */
+    border: none !important;
+    justify-content: center;
+}
+
+.delete {
+    width: 60px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    /* border-top: 1px solid #DADADA;
+    border-bottom: 1px solid #DADADA; */
+    justify-content: end;
+    padding-right: 14px;
+}
+
+.select-option {
+    height: 40px;
+    line-height: 40px;
+    padding-left: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.select-option-number {
+    height: 40px;
+    line-height: 40px;
+    padding: 0 10px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.select-option-number-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.select-option:hover {
+    background-color: var(--orange);
+    color: #fff;
+    margin-left: -1px;
+    margin-right: -1px;
+}
+
+.selected.select-option {
+    background-color: var(--orange);
+    color: #fff;
+    margin-left: -1px;
+    margin-right: -1px;
+}
+
+.bs-sliders-parent {
+    /* border-top: 1px solid #DADADA;
+    border-bottom: 1px solid #DADADA; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+}
+
+.bs-sliders {
+    color: var(--text);
+    height: 20px;
+    width: 20px;
+}
+
+.changed {
+    color: #1751F0 !important;
+}
+
+.chevron-down {
+    margin-left: 10px;
+}
+
+.select-list-date {
+    list-style: none;
+    position: absolute;
+    width: calc(100% + 100px);
+    left: -1px;
+    top: 40px;
+    border: 1px solid #DADADA;
+    background: #fff;
+    border-radius: 4px;
+}
+
+.select-date {
+    height: 40px;
+    line-height: 40px;
+    padding-left: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-right: 5px;
+    position: relative;
+    color: var(--text);
+}
+
+.date_picker_box {
+    position: absolute;
+    width: 100%;
+    /* background-color: black; */
+    display: grid;
+    grid-template-columns: repeat(6, 100px);
+    font-size: 12px;
+}
+
+.select-box-sort {
+    cursor: pointer;
+    border: 1px solid #DADADA;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+}
+
+.select {
+    background: none;
+    width: 192px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #DADADA;
+    padding: 12px 20px 12px 10px;
+    position: relative;
+}
+
+.select-list {
+    list-style: none;
+    position: absolute;
+    width: calc(100% + 2px);
+    left: -1px;
+    top: 40px;
+    border: 1px solid #DADADA;
+    background: #fff;
+    border-radius: 4px;
+}
+
+.select-list-number {
+    list-style: none;
+    position: absolute;
+    width: auto;
+    left: -1px;
+    top: 40px;
+    border: 1px solid #DADADA;
+    background: #fff;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+}
+
+.select-option {
+    height: 40px;
+    line-height: 40px;
+    padding-left: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.select-option:hover {
+    background-color: var(--orange);
+    color: #fff;
+    margin-left: -1px;
+    margin-right: -1px;
+}
+
+.selected.select-option {
+    background-color: var(--orange);
+    color: #fff;
+    margin-left: -1px;
+    margin-right: -1px;
+}
+
+.input_number {
+    width: 120px;
+    height: 36px;
+    background-color: white;
+
+}
+
+.input_number input {
+    text-align: right !important;
+}
