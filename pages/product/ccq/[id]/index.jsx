@@ -1,24 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import styles from '../../style.module.css';
-import GoBackButton from '@/components/Button/GoBackButton';
-import { Button, Spin, Tabs, message } from 'antd';
-import { useRouter } from 'next/router';
-import ChangeButton from '@/components/Button/ChangeButton';
-import InfoProductCcq from '@/pages/product/_components/product/InfoProductCcq';
-import CostProduct from '@/pages/product/_components/product/CostProduct';
-import TradingSchedule from '@/pages/product/_components/product/TradingSchedule';
-import ChartProduct from '@/pages/product/_components/product/ChartProduct';
-import axiosInstance from '@/utils/axiosIntance';
-import CustomSkeletion from '@/components/Skeleton/CustomSkeletion';
-import ModelDeleteCcq from '@/components/Modal/ModelDeleteCcq';
-import axios from 'axios';
-import moment from 'moment';
-import { splitArray } from '@/utils/splitArray';
+import React, { useEffect, useState } from "react";
+import styles from "../../style.module.css";
+import GoBackButton from "@/components/Button/GoBackButton";
+import { Button, Spin, Tabs, message } from "antd";
+import { useRouter } from "next/router";
+import ChangeButton from "@/components/Button/ChangeButton";
+
+import axiosInstance from "@/utils/axiosIntance";
+import CustomSkeletion from "@/components/Skeleton/CustomSkeletion";
+import ModelDeleteCcq from "@/components/Modal/ModelDeleteCcq";
+import axios from "axios";
+import moment from "moment";
+import InfoProductCcq from "@/components/product/InfoProductCcq";
+import CostProduct from "@/components/product/CostProduct";
+import TradingSchedule from "@/components/product/TradingSchedule";
+import ChartProduct from "@/components/product/ChartProduct";
+import { splitArray } from "@/utils/splitArray";
+
+import { errorMessage } from "@/utils/errorMessage";
+
+import { errMessage, fundText } from "@/components/Constants";
+import { findFirstDayOfNearestYearItem } from "@/utils/findFirstDayOfNearestYearItem";
 
 const onChange = (key) => {
   console.log(key);
 };
-
 
 const ProductCcqDetal = () => {
   const [data, setData] = useState({});
@@ -36,59 +41,63 @@ const ProductCcqDetal = () => {
     if (res.data?.code === 200) {
       setData(res?.data?.data);
       setFundForm(res?.data?.data);
-
     }
     setLoading(false);
-  }
+  };
 
   const editProductCcq = (form) => setFundForm(form);
 
   const items = [
     {
-      key: '1',
+      key: "1",
       label: `Thông tin`,
-      children: <InfoProductCcq
-        dataProductCcq={data}
-        isEdit={isEdit}
-        edit={editProductCcq}
-        fundForm={fundForm}
-        setIsEdit={setIsEdit}
-        setFundForm={setFundForm}
-      />,
+      children: (
+        <InfoProductCcq
+          dataProductCcq={data}
+          isEdit={isEdit}
+          edit={editProductCcq}
+          fundForm={fundForm}
+          setIsEdit={setIsEdit}
+          setFundForm={setFundForm}
+        />
+      ),
     },
     {
-      key: '2',
+      key: "2",
       label: `Biểu phí`,
-      children: <CostProduct
-        dataProductCcq={data}
-        isEdit={isEdit}
-        edit={setFundForm}
-        fundForm={fundForm}
-      />,
+      children: (
+        <CostProduct
+          dataProductCcq={data}
+          isEdit={isEdit}
+          edit={setFundForm}
+          fundForm={fundForm}
+        />
+      ),
     },
     {
-      key: '3',
+      key: "3",
       label: `Lịch giao dịch`,
-      children: <TradingSchedule
-        dataProductCcq={data}
-        isEdit={isEdit}
-        edit={editProductCcq}
-        fundForm={fundForm}
-      />,
+      children: (
+        <TradingSchedule
+          dataProductCcq={data}
+          isEdit={isEdit}
+          edit={editProductCcq}
+          fundForm={fundForm}
+        />
+      ),
     },
     {
-      key: '4',
+      key: "4",
       label: `Biểu đồ`,
       children: <ChartProduct />,
     },
   ];
 
   useEffect(() => {
-    if (id !== 'create' || isEdit) {
+    if (id !== "create" || isEdit) {
       fetchProductCcqDetal(id);
     }
   }, [id, isEdit]);
-
 
   const handelOpenDelete = () => {
     setOpenModle(true);
@@ -97,43 +106,59 @@ const ProductCcqDetal = () => {
   const handleCrawlDataChart = async () => {
     setLoadingCrawl(true);
     try {
-      const toDate = moment(new Date()).format('YYYYMMYY');
-
-      const idCrawlResponse = await axiosInstance.get(`/admin/get-fm-id?fund_name=${data?.name}`);
-
+      const toDate = moment(new Date()).format("YYYYMMYY");
+      const idCrawlResponse = await axiosInstance.get(
+        `/admin/get-fm-id?fund_name=${data?.name}`
+      );
       const productId = idCrawlResponse.data?.data?.idFm;
-
       if (!productId) {
-        console.log("CCQ này k có id của Fm !");
-        return false;
-      };
-
+        return message.error(errMessage.errGetIdFund);
+      }
       const payload = {
         isAllData: 1,
         productId,
         fromDate: null,
-        toDate
+        toDate,
       };
+      const dataCrawlFm = await axios.post(
+        process.env.NEXT_PUBLIC_FM_API,
+        payload
+      );
 
-      const dataCrawlFm = await axios.post('https://api.fmarket.vn/res/product/get-nav-history', payload);
       const dataFmResponse = dataCrawlFm.data?.data;
 
       if (dataCrawlFm.data?.code !== 200) {
-        console.log("Lỗi khi lấy data chart");
-        return false;
-      };
+        setLoadingCrawl(false);
+        return message.error(errorMessage.errGetChart);
+      }
+
+      if (dataFmResponse?.length === 0) {
+        return message.error(errMessage.errGetDataChart1);
+      }
 
       const latestPrice = dataFmResponse[dataFmResponse.length - 1].nav;
+      const latestDate = dataFmResponse[dataFmResponse.length - 1].navDate;
 
-      await axiosInstance.put(`/admin/edit-product-ccq/${id}`, { current_price: latestPrice });
+      const firstDayOfNearestYear =
+        findFirstDayOfNearestYearItem(dataFmResponse);
+
+      const navFund =
+        (Number(latestPrice) / Number(firstDayOfNearestYear?.nav)) * 100;
+
+      await axiosInstance.put(`/admin/edit-product-ccq/${id}`, {
+        current_price: latestPrice,
+        latest_date: latestDate,
+        navFund,
+      });
 
       const dataSaveDb = dataFmResponse?.map((item) => {
         return {
           date_yaxis: item?.navDate,
           value_xaxis: item?.nav,
           id_chart: item?.id,
-        }
+        };
       });
+
       const splitDataSaveDb = splitArray(dataSaveDb);
       for (const dataChart of splitDataSaveDb) {
         try {
@@ -143,59 +168,53 @@ const ProductCcqDetal = () => {
           });
           message.success(updateChart?.data?.message);
         } catch (error) {
-          message.error(error);
-
-          console.error('Error saving data to the database:', error);
+          setLoadingCrawl(false);
+          return message.error(errMessage.errGetDataChart);
         }
-      };
-
-
+      }
+      fetchProductCcqDetal(id);
     } catch (error) {
-      console.log('error______________________', error)
+      setLoadingCrawl(false);
+      return message.error(errMessage.errGetDataChart);
     }
     setLoadingCrawl(false);
-  }
+  };
 
   return (
-    <div className='main-content'>
+    <div className="main-content">
       <div className={styles.box_nav_header}>
         <GoBackButton />
-        {!isEdit && router.query.id !== 'create' && (
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-          }}>
+        {!isEdit && router.query.id !== "create" && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
             <ChangeButton
               currentValue={isEdit}
               onClick={setIsEdit}
-              title='Thay đổi'
-
+              title="Thay đổi"
             />
             <ChangeButton
               currentValue={isEdit}
               onClick={handelOpenDelete}
-              title='Xóa'
+              title="Xóa"
             />
           </div>
         )}
       </div>
       {loading ? (
-        <CustomSkeletion style={{ marginTop: '52px' }} />
+        <CustomSkeletion style={{ marginTop: "52px" }} />
       ) : (
-        <div className={`${styles['account']}`} >
-          <div style={{ margin: '30px 12px' }}>
+        <div className={`${styles["account"]}`}>
+          <div style={{ margin: "30px 12px" }}>
             <Button onClick={handleCrawlDataChart}>
-              <Spin spinning={loadingCrawl}>
-                Crawl data chart
-              </Spin>
+              <Spin spinning={loadingCrawl}>{fundText.updataFund}</Spin>
             </Button>
           </div>
-          <Tabs
-            defaultActiveKey="1"
-            items={items}
-            onChange={onChange}
-          />
+          <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
         </div>
       )}
       <ModelDeleteCcq
@@ -205,7 +224,7 @@ const ProductCcqDetal = () => {
         name={data?.name}
       />
     </div>
-  )
-}
+  );
+};
 
-export default ProductCcqDetal
+export default ProductCcqDetal;

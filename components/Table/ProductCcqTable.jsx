@@ -55,13 +55,13 @@ const data = [
     },
 ]
 
-function ProductCcqTable({ dataProductCcq }) {
+function ProductCcqTable({dataProductCcq}) {
     if (dataProductCcq?.length === 0) return (
         <div style={{ width: '100%', minHeight: '100vh' }}>
             <h1>Không có dữ liệu phù hợp tìm kiếm</h1>
         </div>
     )
-    // console.log("dataProductCcq", dataProductCcq);
+        // console.log("dataProductCcq", dataProductCcq);
     return (
         <div className={`${styles['table-wr']}`} >
             <table className={`${styles['table']}`}>
@@ -80,13 +80,20 @@ function ProductCcqTable({ dataProductCcq }) {
                             <td className={`${styles['table-td']}`}>{item?.name}</td>
                             <td className={`${styles['table-td']}`}>{item?.name_fund}</td>
                             <td className={`${styles['table-td']}`}>{item?.company}</td>
-                            <td className={`${styles['table-td']}`}>{item?.type?.name}</td>
+                            <td className={`${styles['table-td']}`}>
+                                {/* {item?.type_id === "1" && 'Quỹ trái phiếu'}
+                                {item?.type_id === "2" && 'Quỹ cân bằng'}
+                                {item?.type_id === "3" && 'Quỹ đầu tư'}
+                                {!item?.type_id && 'Quỹ trái phiếu'} */}
+                                {item?.type?.name}
+                               
+                            </td>
                             {/* <td
                                 className={`${styles["table-td"]} ${item?.status_id == 0
-                                    ? styles["pending"]
-                                    : item.status_id === 2  
-                                        ? styles["done"]
-                                        : styles["reject"]
+                                        ? styles["pending"]
+                                        : item.status_id == 1
+                                            ? styles["done"]
+                                            : styles["reject"]
                                     }`}
                             >
                                 Đang hoạt động

@@ -1,0 +1,5 @@
+{
+  "errGetIdFund": "Chứng chỉ này không có id của Fmarket!",
+  "errGetDataChart": "Lỗi khi lấy data chart!",
+  "errGetDataChart1": "Chứng chỉ này hiện tại không có dữ liệu"
+}

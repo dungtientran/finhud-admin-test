@@ -43,7 +43,6 @@ const ProductCcq = () => {
   useEffect(() => {
     fetchProductCCq();
   }, [query]);
-
   return (
     <div className="main-content">
       <div className={styles.box_nav_header}>
