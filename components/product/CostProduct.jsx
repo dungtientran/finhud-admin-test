@@ -1,16 +1,105 @@
 import React, { Fragment, useEffect, useState } from "react";
 import InputComponent from "../Input/InputComponent";
 import styles from "./style.module.css";
-import { Col, Row } from "antd";
+import { Button, Col, Row, message } from "antd";
 import InputEditCost from "../Input/InputEditCost";
 import { useRouter } from "next/router";
+import axiosInstance from "@/utils/axiosIntance";
+import { CloseOutlined } from "@ant-design/icons";
 
 const CostProduct = ({ dataProductCcq, isEdit, edit, fundForm, setIsEdit }) => {
-  const [isHidden, setIsHidden] = useState(false);
   const { query } = useRouter();
+  const [isHidden, setIsHidden] = useState(false);
+  const [feeBuyComponents, setfeeBuyComponents] = useState([{ id: 0 }]);
+  const [feeSaleComponents, setfeeSaleComponents] = useState([{ id: 0 }]);
+  const [priceSale, setPriceSale] = useState([]);
+  const [priceBuy, setPriceBuy] = useState([]);
+
   useEffect(() => {
     if (query.id === "create") setIsHidden(true);
   }, [query]);
+
+  useEffect(() => {
+    const feeBuyAllValues = feeBuyComponents
+      .map((component) => component.values)
+      .filter((value) => !!value);
+    const feeSaleAllValues = feeSaleComponents
+      .map((component) => component.values)
+      .filter((value) => !!value);
+
+    edit({
+      ...fundForm,
+      priceBuy: feeBuyAllValues,
+      priceSale: feeSaleAllValues,
+    });
+  }, [feeBuyComponents, feeSaleComponents]);
+
+  useEffect(() => {
+    getPriceFunds(query?.id);
+  }, [query]);
+
+  const getPriceFunds = async (id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/admin/get-price-fund?id_fund=${id}`
+      );
+
+      if (response.data?.data?.code === 200) {
+        const data = response.data?.data?.data;
+        const priceBuy = data?.filter((item) => item.type === "buy");
+        const priceSale = data?.filter((item) => item.type === "sale");
+        setPriceSale(priceSale);
+        setPriceBuy(priceBuy);
+        setfeeBuyComponents(
+          priceBuy.map((data, index) => ({ id: index, values: data }))
+        );
+        setfeeSaleComponents(
+          priceSale.map((data, index) => ({ id: index, values: data }))
+        );
+      } else {
+        message.error("Có lỗi khi lấy thông tin biểu phí!");
+      }
+    } catch (error) {
+      message.error(
+        `${error?.message}` || "Có lỗi khi lấy thông tin biểu phí!"
+      );
+    }
+  };
+
+  const handleAddFeeBuy = () => {
+    setfeeBuyComponents([...feeBuyComponents, { id: feeBuyComponents.length }]);
+  };
+  const handleAddFeeSale = () => {
+    setfeeSaleComponents([
+      ...feeSaleComponents,
+      { id: feeBuyComponents.length },
+    ]);
+  };
+  const handleRemoveFeeBuy = (id) => {
+    setfeeBuyComponents((prevfeeBuyComponent) =>
+      prevfeeBuyComponent.filter((component) => component.id !== id)
+    );
+  };
+  const handleRemoveFeeSale = (id) => {
+    setfeeSaleComponents((prevfeeSaleComponent) =>
+      prevfeeSaleComponent.filter((component) => component.id !== id)
+    );
+  };
+  const handleChangeFeeBuys = (id, values) => {
+    setfeeBuyComponents((prevfeeBuyComponents) =>
+      prevfeeBuyComponents.map((component) =>
+        component.id === id ? { ...component, values } : component
+      )
+    );
+  };
+  const handleChangeFeeSales = (id, values) => {
+    setfeeSaleComponents((prevfeeBuyComponents) =>
+      prevfeeBuyComponents.map((component) =>
+        component.id === id ? { ...component, values } : component
+      )
+    );
+  };
+
   return (
     <div style={{ minHeight: "500px" }}>
       <Row>
@@ -39,70 +128,89 @@ const CostProduct = ({ dataProductCcq, isEdit, edit, fundForm, setIsEdit }) => {
             <div className={`${styles.box_purchase_fee} ${styles.value}`}>
               {isEdit || query.id === "create" ? (
                 <Fragment>
-                  <InputEditCost
-                    iconleft={
-                      <img src="/icons/prev_cost_ccq.svg" alt="prev_cost_ccq" />
-                    }
-                    iconright={
-                      <img src="/icons/dow_cost_ccq.svg" alt="dow_cost_ccq" />
-                    }
-                    value={dataProductCcq?.small_purchase_fee}
-                    percent={dataProductCcq?.small_percent_purchase}
-                    icon={
-                      <img
-                        src="/icons/subtraction_ccq.svg"
-                        alt="subtraction_ccq.svg"
+                  {feeBuyComponents.map((component) => (
+                    <div
+                      key={component.id}
+                      style={{ display: "flex", alignItems: "center" }}
+                    >
+                      <InputEditCost
+                        id={component.id}
+                        onInputChange={(values) =>
+                          handleChangeFeeBuys(component.id, values)
+                        }
+                        initialValues={component.values}
                       />
-                    }
-                    placeholder={"0 VND"}
-                    placeholder_percent={"0 %"}
-                  />
-                  <InputEditCost
-                    iconleft={
-                      <img src="/icons/prev_cost_ccq.svg" alt="prev_cost_ccq" />
-                    }
-                    value={dataProductCcq?.large_purchase_fee}
-                    percent={dataProductCcq?.large_selling_purchase}
-                    icon={
-                      <img
-                        src="/icons/subtraction_ccq.svg"
-                        alt="subtraction_ccq.svg"
-                      />
-                    }
-                    placeholder={"0 VND"}
-                    placeholder_percent={"0 %"}
-                    hidden={isHidden}
-                  />
-                  <InputEditCost
-                    iconleft={
-                      <img src="/icons/next_ccq.svg" alt="next_ccq.svg" />
-                    }
-                    hidden={true}
-                    icon={<img src="/icons/plus_ccq.svg" alt="plus_ccq.svg" />}
-                  />
+                      <Button
+                        size="middle"
+                        type="default"
+                        onClick={() => handleRemoveFeeBuy(component.id)}
+                      >
+                        <CloseOutlined />
+                      </Button>
+                    </div>
+                  ))}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <Button
+                      size="middle"
+                      type="default"
+                      onClick={handleAddFeeBuy}
+                    >
+                      Thêm
+                    </Button>
+                  </div>
                 </Fragment>
               ) : (
                 <Fragment>
-                  <div>
-                    <span>
-                      <img src="/icons/prev_ccq.svg" alt="prev_ccq" />
-                    </span>
-                    <span>
-                      {Number(dataProductCcq?.min_transaction).toLocaleString()}{" "}
-                      VND
-                    </span>
-                    <span>{dataProductCcq?.small_percent_purchase || 0}%</span>
-                  </div>
-                  <div>
-                    <span>
-                      <img src="/icons/next_cost_ccq.svg" alt="next_cost_ccq" />
-                    </span>
-                    <span>
-                      {Number(dataProductCcq?.min_transaction).toLocaleString()}{" "}
-                      VND
-                    </span>
-                    <span>{dataProductCcq?.large_percent_purchase || 0} %</span>
-                  </div>
+                  {priceBuy?.length > 0 && (
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      {priceBuy?.map((item, index) => (
+                        <div
+                          key={index}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          {index !== priceBuy?.length - 1 ? (
+                            <>
+                              <div>
+                                <p> Từ</p>
+                                <p> {Number(item?.from)?.toLocaleString()}</p>
+                                <p>Đến</p>
+                                <p>{Number(item?.to)?.toLocaleString()} VND</p>
+                              </div>
+                              <div>
+                                <p>{item?.value || 0} %</p>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div>
+                                <p>Trên</p>
+                                <p>{Number(item?.from)?.toLocaleString()} </p>
+                                <p>VND</p>
+                              </div>
+                              <div>
+                                <p>{item?.value || 0} %</p>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </Fragment>
               )}
             </div>
@@ -115,9 +223,12 @@ const CostProduct = ({ dataProductCcq, isEdit, edit, fundForm, setIsEdit }) => {
             <div>
               {isEdit || query.id === "create" ? (
                 <InputComponent
-                  value={dataProductCcq?.transaction_tax}
+                  value={fundForm?.transaction_tax}
                   subValue={"%"}
                   placeholder={"0 %"}
+                  onChange={(e) =>
+                    edit({ ...fundForm, transaction_tax: e.target.value })
+                  }
                 />
               ) : (
                 <p className={styles.value}>
@@ -131,72 +242,91 @@ const CostProduct = ({ dataProductCcq, isEdit, edit, fundForm, setIsEdit }) => {
             <div className={`${styles.box_purchase_fee} ${styles.value}`}>
               {isEdit || query.id === "create" ? (
                 <Fragment>
-                  <InputEditCost
-                    iconleft={
-                      <img src="/icons/prev_cost_ccq.svg" alt="prev_cost_ccq" />
-                    }
-                    iconright={
-                      <img src="/icons/dow_cost_ccq.svg" alt="dow_cost_ccq" />
-                    }
-                    value={dataProductCcq?.small_selling_fee}
-                    percent={dataProductCcq?.small_selling_purchase}
-                    icon={
-                      <img
-                        src="/icons/subtraction_ccq.svg"
-                        alt="subtraction_ccq.svg"
+                  {feeSaleComponents.map((component) => (
+                    <div
+                      key={component.id}
+                      style={{ display: "flex", alignItems: "center" }}
+                    >
+                      <InputEditCost
+                        id={component.id}
+                        onInputChange={(values) =>
+                          handleChangeFeeSales(component.id, values)
+                        }
+                        initialValues={component.values}
                       />
-                    }
-                    placeholder={"0 VND"}
-                    placeholder_percent={"0 %"}
-                  />
-                  <InputEditCost
-                    iconleft={
-                      <img src="/icons/prev_cost_ccq.svg" alt="prev_cost_ccq" />
-                    }
-                    value={dataProductCcq?.large_selling_fee}
-                    percent={dataProductCcq?.large_selling_purchase}
-                    icon={
-                      <img
-                        src="/icons/subtraction_ccq.svg"
-                        alt="subtraction_ccq"
-                      />
-                    }
-                    placeholder={"0 VND"}
-                    placeholder_percent={"0 %"}
-                  />
-                  <InputEditCost
-                    iconleft={<img src="/icons/next_ccq.svg" alt="next_ccq" />}
-                    hidden={true}
-                    icon={<img src="/icons/plus_ccq.svg" alt="plus_ccq" />}
-                    placeholder={"0 VND"}
-                  />
+                      <Button
+                        size="middle"
+                        type="default"
+                        onClick={() => handleRemoveFeeSale(component.id)}
+                      >
+                        <CloseOutlined />
+                      </Button>
+                    </div>
+                  ))}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <Button
+                      size="middle"
+                      type="default"
+                      onClick={handleAddFeeSale}
+                    >
+                      Thêm
+                    </Button>
+                  </div>
                 </Fragment>
               ) : (
                 <Fragment>
-                  <div>
-                    <span>
-                      <img src="/icons/prev_ccq.svg" alt="prev_ccq" />
-                    </span>
-                    <span>
-                      {Number(dataProductCcq?.min_transaction).toLocaleString()}{" "}
-                      VND
-                    </span>
-                    <span>
-                      {dataProductCcq?.small_selling_purchase || 0.5}%
-                    </span>
-                  </div>
-                  <div>
-                    <span>
-                      <img src="/icons/next_cost_ccq.svg" alt="next_cost_ccq" />
-                    </span>
-                    <span>
-                      {Number(dataProductCcq?.min_transaction).toLocaleString()}{" "}
-                      VND
-                    </span>
-                    <span>
-                      {dataProductCcq?.large_selling_purchase || 0.5}%
-                    </span>
-                  </div>
+                  {priceSale?.length > 0 && (
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      {priceSale?.map((item, index) => (
+                        <div
+                          key={index}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          {index !== priceSale?.length - 1 ? (
+                            <>
+                              <div>
+                                <p> Từ</p>
+                                <p> {Number(item?.from)?.toLocaleString()}</p>
+                                <p>đến</p>
+                                <p>
+                                  {Number(item?.to)?.toLocaleString()} tháng
+                                </p>
+                              </div>
+                              <div>
+                                <p>{item?.value || 0} %</p>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div>
+                                <p>Trên</p>
+                                <p>{Number(item?.from)?.toLocaleString()} </p>
+                                <p>tháng</p>
+                              </div>
+                              <div>
+                                <p>{item?.value || 0} %</p>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </Fragment>
               )}
             </div>

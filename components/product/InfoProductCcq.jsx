@@ -21,6 +21,14 @@ import { getUrlImageUpload } from "@/utils/getUrlImageUpload";
 
 const status = ["Đang hoạt động", "Ẩn"];
 
+const typeFunds = [
+  { value: "1", label: "Quỹ cổ phiếu" },
+  { value: "2", label: "Quỹ cân bằng" },
+  { value: "3", label: "Quỹ trái phiếu" },
+  { value: "4", label: "Quỹ tiền tệ" },
+  { value: "5", label: "Quỹ IPO" },
+];
+
 const InfoProductCcq = ({
   dataProductCcq,
   isEdit,
@@ -33,23 +41,22 @@ const InfoProductCcq = ({
   const [fileList, setFileList] = useState(null);
 
   const { query } = useRouter();
-
   const router = useRouter();
 
   const handleRequest = async (verificationConfirm) => {
     setLoading(true);
-    // const urlLogo = await getUrlImageUpload(fileList);
-
-    // if (!urlLogo) {
-    //   setLoading(false);
-
-    //   return message.error("Lỗi khi upload logo");
-    // }
-
     const newForm = {
       ...fundForm,
-      // company_logo_url: urlLogo,
     };
+
+    if (fileList) {
+      const urlLogo = await getUrlImageUpload(fileList);
+      if (!urlLogo) {
+        setLoading(false);
+        return message.error("Lỗi khi upload logo");
+      }
+      newForm.company_logo_url = urlLogo;
+    }
 
     if (verificationConfirm === "update") {
       const res = await axiosInstance.put(
@@ -90,13 +97,7 @@ const InfoProductCcq = ({
                   defaultValue={dataProductCcq?.type_id}
                   style={{ width: 160 }}
                   onChange={(val) => edit({ ...fundForm, type_id: val })}
-                  options={[
-                    { value: "1", label: "Quỹ cổ phiếu" },
-                    { value: "2", label: "Quỹ cân bằng" },
-                    { value: "3", label: "Quỹ trái phiếu" },
-                    { value: "4", label: "Quỹ tiền tệ" },
-                    { value: "5", label: "Quỹ IPO" },
-                  ]}
+                  options={typeFunds}
                 />
               ) : (
                 <p className={`${styles["value"]} flex-1`}>
@@ -144,7 +145,7 @@ const InfoProductCcq = ({
               </p>
             </div>
           </Col>
-          <Col xl={12}>
+          {/* <Col xl={12}>
             <div className="flex" style={{ alignItems: "center" }}>
               <p className={`${styles["label"]}`}>Trạng thái:</p>
               {isEdit || query.id === "create" ? (
@@ -163,7 +164,7 @@ const InfoProductCcq = ({
                 </p>
               )}
             </div>
-          </Col>
+          </Col> */}
         </Row>
         <Row style={{ width: "100%" }} gutter={[20, 0]}>
           <Col xl={12}>

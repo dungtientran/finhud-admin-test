@@ -16,6 +16,10 @@ export const getUrlImageUpload = async (files) => {
       payload
     );
 
+    if (!getUrlSeverS3.data.url) {
+      return message.error("Lỗi khi upload logo!");
+    }
+
     const urlS3 = getUrlSeverS3.data.url;
 
     const options = {
@@ -30,7 +34,9 @@ export const getUrlImageUpload = async (files) => {
       "/admin/get_pre_signed_url_get",
       payload
     );
-
+    if (!imageUrl.data?.url) {
+      return message.error("Lỗi khi lấy url logo!");
+    }
     return imageUrl.data?.url;
   } catch (error) {
     console.log(error);

@@ -32,6 +32,7 @@ const ProductCcqDetal = () => {
   const [fundForm, setFundForm] = useState({});
   const [openModel, setOpenModle] = useState(false);
   const [loadingCrawl, setLoadingCrawl] = useState(false);
+  const [priceFunds, setPriceFunds] = useState([]);
 
   const router = useRouter();
   const { id } = router.query;
@@ -89,7 +90,14 @@ const ProductCcqDetal = () => {
     {
       key: "4",
       label: `Biểu đồ`,
-      children: <ChartProduct />,
+      children: (
+        <ChartProduct
+          dataProductCcq={data}
+          isEdit={isEdit}
+          edit={editProductCcq}
+          fundForm={fundForm}
+        />
+      ),
     },
   ];
 
@@ -143,8 +151,9 @@ const ProductCcqDetal = () => {
         findFirstDayOfNearestYearItem(dataFmResponse);
 
       const navFund =
-        (Number(latestPrice) / Number(firstDayOfNearestYear?.nav)) * 100;
-
+        ((Number(latestPrice) - Number(firstDayOfNearestYear?.nav)) /
+          Number(firstDayOfNearestYear?.nav)) *
+        100;
       await axiosInstance.put(`/admin/edit-product-ccq/${id}`, {
         current_price: latestPrice,
         latest_date: latestDate,
