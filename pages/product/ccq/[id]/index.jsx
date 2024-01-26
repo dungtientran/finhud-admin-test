@@ -16,8 +16,6 @@ import TradingSchedule from "@/components/product/TradingSchedule";
 import ChartProduct from "@/components/product/ChartProduct";
 import { splitArray } from "@/utils/splitArray";
 
-import { errorMessage } from "@/utils/errorMessage";
-
 import { errMessage, fundText } from "@/components/Constants";
 import { findFirstDayOfNearestYearItem } from "@/utils/findFirstDayOfNearestYearItem";
 
@@ -32,7 +30,6 @@ const ProductCcqDetal = () => {
   const [fundForm, setFundForm] = useState({});
   const [openModel, setOpenModle] = useState(false);
   const [loadingCrawl, setLoadingCrawl] = useState(false);
-  const [priceFunds, setPriceFunds] = useState([]);
 
   const router = useRouter();
   const { id } = router.query;
@@ -137,7 +134,7 @@ const ProductCcqDetal = () => {
 
       if (dataCrawlFm.data?.code !== 200) {
         setLoadingCrawl(false);
-        return message.error(errorMessage.errGetChart);
+        return message.error(errMessage.errGetDataChart1);
       }
 
       if (dataFmResponse?.length === 0) {

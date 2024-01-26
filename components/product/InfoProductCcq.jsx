@@ -307,7 +307,9 @@ const InfoProductCcq = ({
           </Col>
           <Col xl={12}>
             <div className="flex">
-              <p className={`${styles["label"]}`}>Tỷ trọng:</p>
+              <p className={`${styles["label"]}`}>
+                Tỷ trọng đầu tư theo ngành:
+              </p>
               {isEdit || query.id === "create" ? (
                 <AreaComponent
                   value={fundForm?.proportion}
@@ -336,6 +338,40 @@ const InfoProductCcq = ({
           </Col>
         </Row>
 
+        <Row style={{ width: "100%" }} gutter={[20, 0]}>
+          <Col xl={12}></Col>
+          <Col xl={12}>
+            <div className="flex">
+              <p className={`${styles["label"]}`}>
+                Tỷ trọng đầu tư theo tài sản:
+              </p>
+              {isEdit || query.id === "create" ? (
+                <AreaComponent
+                  value={fundForm?.proportion_2}
+                  placeholder={"N/A"}
+                  onChange={(e) =>
+                    edit({ ...fundForm, proportion_2: e.target.value })
+                  }
+                />
+              ) : (
+                <div
+                  className={`${styles["value"]} flex-1`}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "12px",
+                  }}
+                >
+                  {dataProductCcq?.proportion_2
+                    ?.split(",")
+                    ?.map((item, index) => (
+                      <p key={index}>{item}</p>
+                    ))}
+                </div>
+              )}
+            </div>
+          </Col>
+        </Row>
         <Row style={{ width: "100%" }} gutter={[20, 0]}>
           <Col xl={12}>
             <div className="flex">

@@ -1,42 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
 import axiosInstance from "@/utils/axiosIntance";
-// import {
-//   LineChart,
-//   Line,
-//   XAxis,
-//   YAxis,
-//   CartesianGrid,
-//   Tooltip,
-//   Legend,
-// } from "recharts";
 import { message } from "antd";
 import { filterDataLastMonths } from "@/utils/filterDataLastMonths";
-// import { Line } from "react-chartjs-2";
-
-const data = [
-  { year: "1991", value: 3 },
-  { year: "1992", value: 4 },
-  { year: "1993", value: 3.5 },
-  { year: "1994", value: 5 },
-  { year: "1995", value: 4.9 },
-  { year: "1996", value: 6 },
-  { year: "1997", value: 7 },
-  { year: "1998", value: 9 },
-  { year: "1999", value: 13 },
-];
-
-const options = {
-  scales: {
-    x: {
-      type: "category",
-      labels: data.labels,
-    },
-    y: {
-      beginAtZero: false,
-    },
-  },
-};
+import AreaChartComponent from "./AreaChartComponent";
 
 const months = [
   {
@@ -105,10 +72,10 @@ const ChartProduct = ({
 
         setDataChart(filterDataFirst);
       } else {
-        message.error("Có lỗi khi lấy data chart!");
+        message.error("Có lỗi khi lấy dữ liệu biểu đồ!");
       }
     } catch (error) {
-      message.error(`${error?.message}` || "Có lỗi khi lấy data chart!");
+      message.error(`${error?.message}` || "Có lỗi khi lấy dữ liệu biểu đồ!");
     }
   };
 
@@ -123,22 +90,16 @@ const ChartProduct = ({
     setDataChart(filterData);
   }, [isActiveMonth]);
 
-  const config = {
-    data,
-    xField: "year",
-    yField: "value",
-  };
-  console.log("dataChart_________________________", dataChart);
   return (
     <div style={{ minHeight: "500px" }}>
       <div className={`${styles.chart_CCQ}`}>
         <div>
-          <p>Giá gần nhất:</p>
+          <p>Giá gần nhất: </p>
           {/* <p>AUM:</p> */}
           <p>Biểu đồ tăng trưởng NAV:</p>
         </div>
         <div className={styles.value}>
-          <p> VND</p>
+          <p>{Number(dataProductCcq?.current_price)?.toLocaleString()} VND</p>
           {/* <p>1,000,000,000,000 VND</p> */}
           <p className={`${styles.chart_percent}`}>{Number(nav).toFixed(2)}%</p>
         </div>
@@ -178,12 +139,13 @@ const ChartProduct = ({
             <XAxis dataKey="date_yaxis" />
             <YAxis tickCount={5000} domain={[3000, maxUVValue + 500]} />
             <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+            <Line type="monotone" dataKey="pv" stroke="#8884d8" />
             <Line type="monotone" dataKey="value_xaxis" stroke="#82ca9d" />
             <Tooltip />
             <Legend />
           </LineChart> */}
-          {/* <Line {...config} />; */}
         </div>
+        <AreaChartComponent chartData={dataChart} />
       </div>
     </div>
   );

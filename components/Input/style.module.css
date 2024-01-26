@@ -175,8 +175,10 @@
   text-align: center;
   outline: none;
 }
-.input_edit_cost > div {
+.input_edit_cost > div:not(:nth-child(3)) {
   flex: 1;
+  display: flex;
+  align-items: center;
 }
 .input_edit_cost > div > input {
   width: 100%;

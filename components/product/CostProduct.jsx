@@ -57,11 +57,12 @@ const CostProduct = ({ dataProductCcq, isEdit, edit, fundForm, setIsEdit }) => {
           priceSale.map((data, index) => ({ id: index, values: data }))
         );
       } else {
-        message.error("Có lỗi khi lấy thông tin biểu phí!");
+        message.error("Có lỗi khi lấy thông tin biểu phí, Tải lại trang web!");
       }
     } catch (error) {
       message.error(
-        `${error?.message}` || "Có lỗi khi lấy thông tin biểu phí!"
+        `${error?.message}` ||
+          "Có lỗi khi lấy thông tin biểu phí, Tải lại trang web!"
       );
     }
   };
@@ -72,7 +73,7 @@ const CostProduct = ({ dataProductCcq, isEdit, edit, fundForm, setIsEdit }) => {
   const handleAddFeeSale = () => {
     setfeeSaleComponents([
       ...feeSaleComponents,
-      { id: feeBuyComponents.length },
+      { id: feeSaleComponents.length },
     ]);
   };
   const handleRemoveFeeBuy = (id) => {
@@ -104,7 +105,7 @@ const CostProduct = ({ dataProductCcq, isEdit, edit, fundForm, setIsEdit }) => {
     <div style={{ minHeight: "500px" }}>
       <Row>
         <Col span={12} className={styles.box_cost_main}>
-          <div className={styles.box_cost}>
+          <div className={styles.box_cost} style={{ alignItems: "center" }}>
             <p>Phí quản lý: </p>
             <div>
               {isEdit || query.id === "create" ? (
@@ -123,48 +124,87 @@ const CostProduct = ({ dataProductCcq, isEdit, edit, fundForm, setIsEdit }) => {
               )}
             </div>
           </div>
+        </Col>
+
+        <Col span={12} className={styles.box_cost_main}>
+          <div className={styles.box_cost} style={{ alignItems: "center" }}>
+            <p>Thuế giao dịch:</p>
+            <div>
+              {isEdit || query.id === "create" ? (
+                <InputComponent
+                  value={fundForm?.transaction_tax}
+                  subValue={"%"}
+                  placeholder={"0 %"}
+                  onChange={(e) =>
+                    edit({ ...fundForm, transaction_tax: e.target.value })
+                  }
+                />
+              ) : (
+                <p className={styles.value}>
+                  {dataProductCcq?.transaction_tax || 0} %
+                </p>
+              )}
+            </div>
+          </div>
+        </Col>
+      </Row>
+      <Row style={{ marginTop: 20 }}>
+        <Col span={24} className={styles.box_cost_main}>
           <div className={styles.box_cost}>
             <p>Phí mua:</p>
             <div className={`${styles.box_purchase_fee} ${styles.value}`}>
               {isEdit || query.id === "create" ? (
-                <Fragment>
-                  {feeBuyComponents.map((component) => (
-                    <div
-                      key={component.id}
-                      style={{ display: "flex", alignItems: "center" }}
-                    >
-                      <InputEditCost
-                        id={component.id}
-                        onInputChange={(values) =>
-                          handleChangeFeeBuys(component.id, values)
-                        }
-                        initialValues={component.values}
-                      />
-                      <Button
-                        size="middle"
-                        type="default"
-                        onClick={() => handleRemoveFeeBuy(component.id)}
-                      >
-                        <CloseOutlined />
-                      </Button>
-                    </div>
-                  ))}
+                <>
                   <div
                     style={{
                       display: "flex",
-                      alignItems: "center",
-                      justifyContent: "flex-end",
+                      flexDirection: "column",
+                      flex: 1,
                     }}
                   >
-                    <Button
-                      size="middle"
-                      type="default"
-                      onClick={handleAddFeeBuy}
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                      }}
                     >
-                      Thêm
-                    </Button>
+                      <Button
+                        size="middle"
+                        type="primary"
+                        onClick={handleAddFeeBuy}
+                      >
+                        Thêm
+                      </Button>
+                    </div>
+                    {feeBuyComponents.map((component) => (
+                      <div
+                        key={component.id}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          flex: 1,
+                        }}
+                      >
+                        <InputEditCost
+                          id={component.id}
+                          onInputChange={(values) =>
+                            handleChangeFeeBuys(component.id, values)
+                          }
+                          initialValues={component.values}
+                          type="buy"
+                        />
+                        <Button
+                          size="middle"
+                          type="dashed"
+                          onClick={() => handleRemoveFeeBuy(component.id)}
+                        >
+                          <CloseOutlined />
+                        </Button>
+                      </div>
+                    ))}
                   </div>
-                </Fragment>
+                </>
               ) : (
                 <Fragment>
                   {priceBuy?.length > 0 && (
@@ -184,7 +224,14 @@ const CostProduct = ({ dataProductCcq, isEdit, edit, fundForm, setIsEdit }) => {
                           }}
                         >
                           {index !== priceBuy?.length - 1 ? (
-                            <>
+                            <div
+                              style={{
+                                minWidth: "500px",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                              }}
+                            >
                               <div>
                                 <p> Từ</p>
                                 <p> {Number(item?.from)?.toLocaleString()}</p>
@@ -194,9 +241,16 @@ const CostProduct = ({ dataProductCcq, isEdit, edit, fundForm, setIsEdit }) => {
                               <div>
                                 <p>{item?.value || 0} %</p>
                               </div>
-                            </>
+                            </div>
                           ) : (
-                            <>
+                            <div
+                              style={{
+                                minWidth: "500px",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                              }}
+                            >
                               <div>
                                 <p>Trên</p>
                                 <p>{Number(item?.from)?.toLocaleString()} </p>
@@ -205,7 +259,7 @@ const CostProduct = ({ dataProductCcq, isEdit, edit, fundForm, setIsEdit }) => {
                               <div>
                                 <p>{item?.value || 0} %</p>
                               </div>
-                            </>
+                            </div>
                           )}
                         </div>
                       ))}
@@ -216,32 +270,31 @@ const CostProduct = ({ dataProductCcq, isEdit, edit, fundForm, setIsEdit }) => {
             </div>
           </div>
         </Col>
-
-        <Col span={12} className={styles.box_cost_main}>
-          <div className={styles.box_cost}>
-            <p>Thuế giao dịch:</p>
-            <div>
-              {isEdit || query.id === "create" ? (
-                <InputComponent
-                  value={fundForm?.transaction_tax}
-                  subValue={"%"}
-                  placeholder={"0 %"}
-                  onChange={(e) =>
-                    edit({ ...fundForm, transaction_tax: e.target.value })
-                  }
-                />
-              ) : (
-                <p className={styles.value}>
-                  {dataProductCcq?.transaction_tax || 0} %
-                </p>
-              )}
-            </div>
-          </div>
+        <Col
+          span={24}
+          style={{ marginTop: 20 }}
+          className={styles.box_cost_main}
+        >
           <div className={styles.box_cost}>
             <p>Phí bán:</p>
             <div className={`${styles.box_purchase_fee} ${styles.value}`}>
               {isEdit || query.id === "create" ? (
                 <Fragment>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "flex-start",
+                    }}
+                  >
+                    <Button
+                      size="middle"
+                      type="primary"
+                      onClick={handleAddFeeSale}
+                    >
+                      Thêm
+                    </Button>
+                  </div>
                   {feeSaleComponents.map((component) => (
                     <div
                       key={component.id}
@@ -253,31 +306,17 @@ const CostProduct = ({ dataProductCcq, isEdit, edit, fundForm, setIsEdit }) => {
                           handleChangeFeeSales(component.id, values)
                         }
                         initialValues={component.values}
+                        type="sale"
                       />
                       <Button
                         size="middle"
-                        type="default"
+                        type="dashed"
                         onClick={() => handleRemoveFeeSale(component.id)}
                       >
                         <CloseOutlined />
                       </Button>
                     </div>
                   ))}
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                    }}
-                  >
-                    <Button
-                      size="middle"
-                      type="default"
-                      onClick={handleAddFeeSale}
-                    >
-                      Thêm
-                    </Button>
-                  </div>
                 </Fragment>
               ) : (
                 <Fragment>
@@ -298,7 +337,14 @@ const CostProduct = ({ dataProductCcq, isEdit, edit, fundForm, setIsEdit }) => {
                           }}
                         >
                           {index !== priceSale?.length - 1 ? (
-                            <>
+                            <div
+                              style={{
+                                minWidth: "500px",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                              }}
+                            >
                               <div>
                                 <p> Từ</p>
                                 <p> {Number(item?.from)?.toLocaleString()}</p>
@@ -310,9 +356,16 @@ const CostProduct = ({ dataProductCcq, isEdit, edit, fundForm, setIsEdit }) => {
                               <div>
                                 <p>{item?.value || 0} %</p>
                               </div>
-                            </>
+                            </div>
                           ) : (
-                            <>
+                            <div
+                              style={{
+                                minWidth: "500px",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                              }}
+                            >
                               <div>
                                 <p>Trên</p>
                                 <p>{Number(item?.from)?.toLocaleString()} </p>
@@ -321,7 +374,7 @@ const CostProduct = ({ dataProductCcq, isEdit, edit, fundForm, setIsEdit }) => {
                               <div>
                                 <p>{item?.value || 0} %</p>
                               </div>
-                            </>
+                            </div>
                           )}
                         </div>
                       ))}

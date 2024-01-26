@@ -201,16 +201,16 @@ span.dot {
 }
 
 .box_cost_main {
-  padding-right: 80px;
+  /* padding-right: 80px; */
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  /* gap: 18px; */
 }
 
 .box_cost {
   display: flex;
   align-items: start;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   /* gap: 30px; */
 }
 
@@ -227,6 +227,7 @@ span.dot {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  flex: 1;
 }
 
 .box_purchase_fee div {
