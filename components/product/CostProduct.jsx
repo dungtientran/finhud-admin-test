@@ -367,7 +367,7 @@ const CostProduct = ({ dataProductCcq, isEdit, edit, fundForm, setIsEdit }) => {
                               }}
                             >
                               <div>
-                                <p>Trên</p>
+                                <p>{Boolean(!item?.to) ? "Từ" : "Trên"}</p>
                                 <p>{Number(item?.from)?.toLocaleString()} </p>
                                 <p>tháng</p>
                               </div>
