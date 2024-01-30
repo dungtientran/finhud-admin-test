@@ -248,24 +248,6 @@ const InfoProductCcq = ({
               <p className={`${styles["label"]}`}>Giới thiệu quỹ:</p>
               {isEdit || query.id === "create" ? (
                 <AreaComponent
-                  value={fundForm?.property}
-                  onChange={(e) =>
-                    edit({ ...fundForm, property: e.target.value })
-                  }
-                  placeholder={"N/A"}
-                />
-              ) : (
-                <p className={`${styles["value"]} flex-1`}>
-                  {dataProductCcq?.property}
-                </p>
-              )}
-            </div>
-          </Col>
-          <Col xl={12}>
-            <div className="flex">
-              <p className={`${styles["label"]}`}>Mục tiêu quỹ:</p>
-              {isEdit || query.id === "create" ? (
-                <AreaComponent
                   value={fundForm?.information}
                   onChange={(e) =>
                     edit({ ...fundForm, information: e.target.value })
@@ -275,6 +257,24 @@ const InfoProductCcq = ({
               ) : (
                 <p className={`${styles["value"]} flex-1`}>
                   {dataProductCcq?.information}
+                </p>
+              )}
+            </div>
+          </Col>
+          <Col xl={12}>
+            <div className="flex">
+              <p className={`${styles["label"]}`}>Mục tiêu quỹ:</p>
+              {isEdit || query.id === "create" ? (
+                <AreaComponent
+                  value={fundForm?.property}
+                  onChange={(e) =>
+                    edit({ ...fundForm, property: e.target.value })
+                  }
+                  placeholder={"N/A"}
+                />
+              ) : (
+                <p className={`${styles["value"]} flex-1`}>
+                  {dataProductCcq?.property}
                 </p>
               )}
             </div>
