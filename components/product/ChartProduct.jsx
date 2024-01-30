@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styles from "./style.module.css";
 import axiosInstance from "@/utils/axiosIntance";
-import { message } from "antd";
+import { Button, Spin, message } from "antd";
 import { filterDataLastMonths } from "@/utils/filterDataLastMonths";
 import AreaChartComponent from "./AreaChartComponent";
+import { fundText } from "../Constants";
 
 const months = [
   {
@@ -30,10 +31,8 @@ const months = [
 
 const ChartProduct = ({
   dataProductCcq,
-  isEdit,
-  edit,
-  fundForm,
-  setIsEdit,
+  handleCrawlDataChart,
+  loadingCrawl,
 }) => {
   const [dataChart, setDataChart] = useState([]);
   const [isActiveMonth, setActiceMoth] = useState(3);
@@ -104,6 +103,18 @@ const ChartProduct = ({
           <p className={`${styles.chart_percent}`}>{Number(nav).toFixed(2)}%</p>
         </div>
       </div>
+      <div
+        style={{
+          margin: "",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "end",
+        }}
+      >
+        <Button onClick={handleCrawlDataChart}>
+          <Spin spinning={loadingCrawl}>{fundText.updataFund}</Spin>
+        </Button>
+      </div>
       <div className={styles.chart_CCQ_container}>
         <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
           {months.map((month, index) => (
@@ -126,6 +137,7 @@ const ChartProduct = ({
               <p
                 style={{
                   color: isActiveMonth === month.value ? "#1870F5" : "#9C9AC1",
+                  margin: 0,
                 }}
               >
                 {month.label}

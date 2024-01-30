@@ -45,65 +45,6 @@ const ProductCcqDetal = () => {
 
   const editProductCcq = (form) => setFundForm(form);
 
-  const items = [
-    {
-      key: "1",
-      label: `Thông tin`,
-      children: (
-        <InfoProductCcq
-          dataProductCcq={data}
-          isEdit={isEdit}
-          edit={editProductCcq}
-          fundForm={fundForm}
-          setIsEdit={setIsEdit}
-          setFundForm={setFundForm}
-        />
-      ),
-    },
-    {
-      key: "2",
-      label: `Biểu phí`,
-      children: (
-        <CostProduct
-          dataProductCcq={data}
-          isEdit={isEdit}
-          edit={setFundForm}
-          fundForm={fundForm}
-        />
-      ),
-    },
-    {
-      key: "3",
-      label: `Lịch giao dịch`,
-      children: (
-        <TradingSchedule
-          dataProductCcq={data}
-          isEdit={isEdit}
-          edit={editProductCcq}
-          fundForm={fundForm}
-        />
-      ),
-    },
-    {
-      key: "4",
-      label: `Biểu đồ`,
-      children: (
-        <ChartProduct
-          dataProductCcq={data}
-          isEdit={isEdit}
-          edit={editProductCcq}
-          fundForm={fundForm}
-        />
-      ),
-    },
-  ];
-
-  useEffect(() => {
-    if (id !== "create" || isEdit) {
-      fetchProductCcqDetal(id);
-    }
-  }, [id, isEdit]);
-
   const handelOpenDelete = () => {
     setOpenModle(true);
   };
@@ -186,6 +127,64 @@ const ProductCcqDetal = () => {
     setLoadingCrawl(false);
   };
 
+  const items = [
+    {
+      key: "1",
+      label: `Thông tin`,
+      children: (
+        <InfoProductCcq
+          dataProductCcq={data}
+          isEdit={isEdit}
+          edit={editProductCcq}
+          fundForm={fundForm}
+          setIsEdit={setIsEdit}
+          setFundForm={setFundForm}
+        />
+      ),
+    },
+    {
+      key: "2",
+      label: `Biểu phí`,
+      children: (
+        <CostProduct
+          dataProductCcq={data}
+          isEdit={isEdit}
+          edit={setFundForm}
+          fundForm={fundForm}
+        />
+      ),
+    },
+    {
+      key: "3",
+      label: `Lịch giao dịch`,
+      children: (
+        <TradingSchedule
+          dataProductCcq={data}
+          isEdit={isEdit}
+          edit={editProductCcq}
+          fundForm={fundForm}
+        />
+      ),
+    },
+    {
+      key: "4",
+      label: `Biểu đồ`,
+      children: (
+        <ChartProduct
+          dataProductCcq={data}
+          handleCrawlDataChart={handleCrawlDataChart}
+          loadingCrawl={loadingCrawl}
+        />
+      ),
+    },
+  ];
+
+  useEffect(() => {
+    if (id !== "create" || isEdit) {
+      fetchProductCcqDetal(id);
+    }
+  }, [id, isEdit]);
+
   return (
     <div className="main-content">
       <div className={styles.box_nav_header}>
@@ -215,11 +214,6 @@ const ProductCcqDetal = () => {
         <CustomSkeletion style={{ marginTop: "52px" }} />
       ) : (
         <div className={`${styles["account"]}`}>
-          <div style={{ margin: "30px 12px" }}>
-            <Button onClick={handleCrawlDataChart}>
-              <Spin spinning={loadingCrawl}>{fundText.updataFund}</Spin>
-            </Button>
-          </div>
           <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
         </div>
       )}
