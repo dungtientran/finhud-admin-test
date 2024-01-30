@@ -52,7 +52,9 @@ const ProductCcqDetal = () => {
   const handleCrawlDataChart = async () => {
     setLoadingCrawl(true);
     try {
-      const toDate = moment(new Date()).format("YYYYMMYY");
+      const toDate = moment(new Date()).format("YYYYMMDD");
+
+      console.log("_toDate_________________________", toDate);
       const idCrawlResponse = await axiosInstance.get(
         `/admin/get-fm-id?fund_name=${data?.name}`
       );
