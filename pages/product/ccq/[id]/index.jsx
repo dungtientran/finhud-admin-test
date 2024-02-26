@@ -48,7 +48,11 @@ const ProductCcqDetal = () => {
   const handelOpenDelete = () => {
     setOpenModle(true);
   };
-
+  const handleRemoveFeeBuy = (id) => {
+    setfeeBuyComponents((prevfeeBuyComponent) =>
+      prevfeeBuyComponent.filter((component) => component.id !== id)
+    );
+  };
   const handleCrawlDataChart = async () => {
     setLoadingCrawl(true);
     try {
