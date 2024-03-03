@@ -295,6 +295,9 @@ input {
 .ant-table-thead th span {
   text-align: center;
 }
+.ck-content {
+  height: 240px;
+}
 
 @media (max-width: 1528px) {
   .main-content {

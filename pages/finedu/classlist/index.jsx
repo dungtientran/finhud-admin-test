@@ -9,10 +9,11 @@ import Highlighter from "react-highlight-words";
 import axiosInstance from "@/utils/axiosIntance";
 import { formatDate } from "@/utils/formatDate";
 import FormCecruitment from "./_components/Form";
+import Link from "next/link";
 
-const Recruitment = () => {
+const ClassList = () => {
   const [loading, setLoading] = useState(false);
-  const [dataRecruitment, setDataRecruitment] = useState([]);
+  const [dataClassList, setDataClassList] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const [open, setOpen] = useState(false);
@@ -22,17 +23,26 @@ const Recruitment = () => {
   const searchInput = useRef(null);
 
   useEffect(() => {
-    getRecruitment();
+    getClassList();
   }, []);
 
-  const getRecruitment = async () => {
+  const getClassList = async () => {
     setLoading(true);
     try {
-      const res = await axiosInstance.get("/admin/job");
+      const res = await axiosInstance.get(
+        "/admin/edu/course?page=1&size=10000"
+      );
 
       if (res.data?.data?.code === 200) {
-        const dataResponse = res.data?.data?.data;
-        setDataRecruitment(dataResponse);
+        const dataResponse = res.data?.data?.data?.rows;
+
+        const dataRender = dataResponse?.map((item) => {
+          return {
+            ...item,
+            teacher: item?.course_teacher?.name,
+          };
+        });
+        setDataClassList(dataRender);
       } else {
         message.error("Lỗi khi lấy dữ liệu");
       }
@@ -43,13 +53,13 @@ const Recruitment = () => {
     }
   };
 
-  const createRecruitment = async (data) => {
+  const createClassList = async (data) => {
     try {
-      const res = await axiosInstance.post("/admin/job", data);
+      const res = await axiosInstance.post("/admin/edu/course", data);
 
-      if (res.data?.data?.code === 201) {
+      if (res.data?.data?.code === 200) {
         onClose();
-        getRecruitment();
+        getClassList();
         message.success("Tạo mới thành công!");
         return;
       } else {
@@ -59,13 +69,13 @@ const Recruitment = () => {
       message.error(error?.message);
     }
   };
-  const updateRecruitment = async (id, data) => {
+  const updateClassList = async (id, data) => {
     try {
-      const res = await axiosInstance.put(`/admin/job/${id}`, data);
+      const res = await axiosInstance.put(`/admin/edu/course/${id}`, data);
 
-      if (res.data?.data?.code === 201) {
+      if (res.data?.data?.code === 200) {
         onClose();
-        getRecruitment();
+        getClassList();
         message.success("Update thành công!");
         return;
       } else {
@@ -75,13 +85,13 @@ const Recruitment = () => {
       message.error(error?.message);
     }
   };
-  const deleteRecruitment = async (id) => {
+  const deleteClassList = async (id) => {
     try {
-      const res = await axiosInstance.delete(`/admin/job/${id}`);
+      const res = await axiosInstance.delete(`/admin/edu/course/${id}`);
 
-      if (res.data?.data?.code === 201) {
+      if (res.data?.data?.code === 200) {
         onClose();
-        getRecruitment();
+        getClassList();
         message.success("Xóa thành công!");
         return;
       } else {
@@ -203,52 +213,55 @@ const Recruitment = () => {
       ...getColumnSearchProps("id"),
     },
     {
-      title: "Title",
-      dataIndex: "title",
-      key: "title",
-      width: "10%",
-      ...getColumnSearchProps("title"),
+      title: "Tên lớp học",
+      dataIndex: "name",
+      key: "name",
+      ...getColumnSearchProps("name"),
     },
     {
-      title: "Địa chỉ",
-      dataIndex: "address",
-      key: "address",
-      width: "10%",
-      ...getColumnSearchProps("address"),
-      sortDirections: ["descend", "ascend"],
+      title: "Giá",
+      dataIndex: "price",
+      key: "price",
+      ...getColumnSearchProps("price"),
+      render: (_, record) => <p>{Number(record?.price)?.toLocaleString()}</p>,
     },
     {
-      title: "Deadline",
-      dataIndex: "apply_deadline",
-      key: "apply_deadline",
-      width: "10%",
-      ...getColumnSearchProps("address"),
-      render: (_, record) => <p>{formatDate(record?.apply_deadline)}</p>,
+      title: "Sale",
+      dataIndex: "sale_price",
+      key: "sale_price",
+      ...getColumnSearchProps("sale_price"),
+      render: (_, record) => (
+        <p>{Number(record?.sale_price)?.toLocaleString()}</p>
+      ),
     },
     {
-      title: "Mô tả",
-      dataIndex: "job_description",
-      key: "job_description",
-      render: (_, record) => {
-        return (
-          <div
-            dangerouslySetInnerHTML={{
-              __html: record?.job_description,
-            }}
-            className="rich_text"
-          ></div>
-        );
-      },
+      title: "Số lượng học viên",
+      dataIndex: "student_count",
+      key: "student_count",
+      ...getColumnSearchProps("student_count"),
+      render: (_, record) => (
+        <p>{Number(record?.student_count)?.toLocaleString()}</p>
+      ),
     },
     {
-      title: "Địa chỉ",
-      dataIndex: "address",
-      key: "address",
-      width: "10%",
-      ...getColumnSearchProps("address"),
+      title: "Giảng viên",
+      dataIndex: "teacher",
+      key: "teacher",
+      ...getColumnSearchProps("teacher"),
+
+      render: (_, record) => <p>{record?.course_teacher?.name}</p>,
     },
     {
-      title: "Action",
+      title: "Chi tiết",
+      dataIndex: "action",
+      render: (_, record) => (
+        <Space size="small">
+          <Link href={`/finedu/classlist/${record?.id}`}>Xem</Link>
+        </Space>
+      ),
+    },
+    {
+      title: "",
       dataIndex: "action",
       render: (_, record) => (
         <Space size="small">
@@ -263,12 +276,14 @@ const Recruitment = () => {
           </Button>
           <Popconfirm
             title="Chắc chắn xóa"
-            onConfirm={() => deleteRecruitment(record?.id)}
+            onConfirm={() => deleteClassList(record?.id)}
           >
             <Button type="primary" size="small">
               <DeleteOutlined />
             </Button>
           </Popconfirm>
+
+          {/* <Link href="/finedu/classlist/12345">Chi tiết</Link> */}
         </Space>
       ),
     },
@@ -291,23 +306,33 @@ const Recruitment = () => {
       <Table
         style={{ padding: "0 20px", height: "100%" }}
         columns={columns}
-        dataSource={dataRecruitment}
+        dataSource={dataClassList}
         loading={loading}
+        expandable={{
+          expandedRowRender: (record) => (
+            <p
+              style={{
+                margin: 0,
+              }}
+            >
+              {record?.student_count}
+            </p>
+          ),
+        }}
       />
       <Drawer
-        title={
-          !!editRowSelected ? "Update tin tuyển dụng" : "Tạo mới tin tuyển dụng"
-        }
+        title={!!editRowSelected ? "Update tin lớp học" : "Tạo mới tin lớp học"}
         onClose={onClose}
         open={open}
+        width={660}
       >
         <FormCecruitment
           initForm={editRowSelected}
-          createRecruitment={createRecruitment}
-          updateRecruitment={updateRecruitment}
+          createClassList={createClassList}
+          updateClassList={updateClassList}
         />
       </Drawer>
     </div>
   );
 };
-export default Recruitment;
+export default ClassList;

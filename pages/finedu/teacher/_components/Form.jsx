@@ -1,19 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Button, DatePicker, Form, Input, Spin } from "antd";
+import { Button, Form, Input, Spin } from "antd";
 import dayjs from "dayjs";
-import dynamic from "next/dynamic";
 
-const Editor = dynamic(
-  () => {
-    return import("@/components/Editor/Editor");
-  },
-  { ssr: false }
-);
-const FormCecruitment = ({
-  initForm,
-  createRecruitment,
-  updateRecruitment,
-}) => {
+const Forma = ({ initForm, createRecruitment, updateRecruitment }) => {
   const [loading, setLoading] = useState(false);
 
   const [richText, setRichText] = useState("");
@@ -67,67 +56,67 @@ const FormCecruitment = ({
       onFinish={onFinish}
     >
       <Form.Item
-        label="Title"
-        name="title"
+        label="Tên giảng viên"
+        name="name"
         rules={[{ required: true, message: "Không đc bỏ trống !" }]}
       >
         <Input />
       </Form.Item>
 
       <Form.Item
-        label="Địa chỉ"
-        name="address"
+        label="Avatar_url"
+        name="avatar"
         rules={[{ required: true, message: "Không đc bỏ trống !" }]}
       >
         <Input />
       </Form.Item>
 
       <Form.Item
-        label="Level"
-        name="level"
+        label="Chuyên ngành"
+        name="major"
         rules={[{ required: true, message: "Không đc bỏ trống !" }]}
       >
         <Input />
       </Form.Item>
 
-      <Form.Item label="Deadline" name="deadline" rules={[{ required: true }]}>
-        <DatePicker onChange={onChange} />
-      </Form.Item>
-
-      <div style={{ marginBottom: "20px" }}>
-        <Editor handleRichText={handleRichText} initialData={initRichtext} />
-      </div>
-
-      {/* <Form.Item
-        label="Mô tả công việc"
-        name="jobDescription"
-        rules={[{ required: true, message: "Không đc bỏ trống !" }]}
-      >
+      <Form.Item label="Địa chỉ" name="location" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
 
       <Form.Item
-        label="Yêu cầu công việc"
-        name="jobRequirements"
-        rules={[{ required: true, message: "Không đc bỏ trống !" }]}
+        label="Facebook url"
+        name="facebook_url"
+        rules={[{ required: true }]}
       >
         <Input />
       </Form.Item>
-
       <Form.Item
-        label="Lợi ích"
-        name="benefit"
-        rules={[{ required: true, message: "Không đc bỏ trống !" }]}
+        label="Lindedin url"
+        name="linkedin_url"
+        rules={[{ required: true }]}
       >
         <Input />
-      </Form.Item> */}
-
+      </Form.Item>
       <Form.Item
-        label="Tag"
-        name="tag"
-        rules={[{ required: true, message: "Không đc bỏ trống !" }]}
+        label="Instagram url"
+        name="instagram_url"
+        rules={[{ required: true }]}
       >
         <Input />
+      </Form.Item>
+      <Form.Item
+        label="Twitter url"
+        name="twitter_url"
+        rules={[{ required: true }]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        label="Giới thiệu"
+        name="description"
+        rules={[{ required: true }]}
+      >
+        <Input.TextArea />
       </Form.Item>
 
       <Form.Item label=" ">
@@ -139,4 +128,4 @@ const FormCecruitment = ({
   );
 };
 
-export default FormCecruitment;
+export default Forma;

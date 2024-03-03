@@ -8,11 +8,16 @@ import { Button, Drawer, Input, Popconfirm, Space, Table, message } from "antd";
 import Highlighter from "react-highlight-words";
 import axiosInstance from "@/utils/axiosIntance";
 import { formatDate } from "@/utils/formatDate";
-import FormCecruitment from "./_components/Form";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import FormClassList from "./Form";
 
-const Recruitment = () => {
+const ClassListDetails = () => {
+  const router = useRouter();
+  const { id } = router.query;
+
   const [loading, setLoading] = useState(false);
-  const [dataRecruitment, setDataRecruitment] = useState([]);
+  const [dataClassList, setDataClassList] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const [open, setOpen] = useState(false);
@@ -22,17 +27,17 @@ const Recruitment = () => {
   const searchInput = useRef(null);
 
   useEffect(() => {
-    getRecruitment();
+    getClassList();
   }, []);
 
-  const getRecruitment = async () => {
+  const getClassList = async () => {
     setLoading(true);
     try {
-      const res = await axiosInstance.get("/admin/job");
-
+      const res = await axiosInstance.get(`/admin/edu/course/${id}`);
+      console.log("ClassListDetails", res);
       if (res.data?.data?.code === 200) {
         const dataResponse = res.data?.data?.data;
-        setDataRecruitment(dataResponse);
+        setDataClassList([dataResponse]);
       } else {
         message.error("Lỗi khi lấy dữ liệu");
       }
@@ -43,13 +48,13 @@ const Recruitment = () => {
     }
   };
 
-  const createRecruitment = async (data) => {
+  const createClassList = async (data) => {
     try {
       const res = await axiosInstance.post("/admin/job", data);
 
       if (res.data?.data?.code === 201) {
         onClose();
-        getRecruitment();
+        getClassList();
         message.success("Tạo mới thành công!");
         return;
       } else {
@@ -59,13 +64,13 @@ const Recruitment = () => {
       message.error(error?.message);
     }
   };
-  const updateRecruitment = async (id, data) => {
+  const updateClassList = async (id, data) => {
     try {
-      const res = await axiosInstance.put(`/admin/job/${id}`, data);
+      const res = await axiosInstance.post(`/admin/edu/lesson`, data);
 
-      if (res.data?.data?.code === 201) {
+      if (res.data?.data?.code === 200) {
         onClose();
-        getRecruitment();
+        getClassList();
         message.success("Update thành công!");
         return;
       } else {
@@ -75,13 +80,13 @@ const Recruitment = () => {
       message.error(error?.message);
     }
   };
-  const deleteRecruitment = async (id) => {
+  const deleteClassList = async (id) => {
     try {
       const res = await axiosInstance.delete(`/admin/job/${id}`);
 
       if (res.data?.data?.code === 201) {
         onClose();
-        getRecruitment();
+        getClassList();
         message.success("Xóa thành công!");
         return;
       } else {
@@ -203,52 +208,83 @@ const Recruitment = () => {
       ...getColumnSearchProps("id"),
     },
     {
-      title: "Title",
-      dataIndex: "title",
-      key: "title",
-      width: "10%",
-      ...getColumnSearchProps("title"),
+      title: "Tên lớp học",
+      dataIndex: "name",
+      key: "name",
+      ...getColumnSearchProps("name"),
+    },
+
+    {
+      title: "Những gì bạn học được",
+      dataIndex: "what_you_can_learn",
+      key: "what_you_can_learn",
+      render: (_, record) => (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: record?.what_you_can_learn,
+          }}
+          className="rich_text"
+        ></div>
+      ),
     },
     {
-      title: "Địa chỉ",
-      dataIndex: "address",
-      key: "address",
-      width: "10%",
-      ...getColumnSearchProps("address"),
-      sortDirections: ["descend", "ascend"],
+      title: "Yêu cầu",
+      dataIndex: "requirement",
+      key: "requirement",
+      render: (_, record) => (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: record?.what_you_can_learn,
+          }}
+          className="rich_text"
+        ></div>
+      ),
     },
     {
-      title: "Deadline",
-      dataIndex: "apply_deadline",
-      key: "apply_deadline",
-      width: "10%",
-      ...getColumnSearchProps("address"),
-      render: (_, record) => <p>{formatDate(record?.apply_deadline)}</p>,
+      title: "Ngôn ngữ",
+      dataIndex: "language",
+      key: "language",
+      render: (_, record) => (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: record?.what_you_can_learn,
+          }}
+          className="rich_text"
+        ></div>
+      ),
     },
     {
-      title: "Mô tả",
-      dataIndex: "job_description",
-      key: "job_description",
-      render: (_, record) => {
-        return (
-          <div
-            dangerouslySetInnerHTML={{
-              __html: record?.job_description,
-            }}
-            className="rich_text"
-          ></div>
-        );
-      },
+      title: "level",
+      dataIndex: "level",
+      key: "level",
     },
     {
-      title: "Địa chỉ",
-      dataIndex: "address",
-      key: "address",
-      width: "10%",
-      ...getColumnSearchProps("address"),
+      title: "Lesson",
+      dataIndex: "lesson",
+      key: "lesson",
+      render: (_, record) => (
+        <div style={{ maxHeight: "350px", overflow: "auto" }}>
+          {record?.lesson?.data?.map((item, i) => (
+            <div key={i}>
+              <p style={{ display: "flex", flexDirection: "column" }}>
+                Nội dung:
+                <span style={{ fontWeight: "700" }}>{item?.description}</span>
+              </p>
+              <p style={{ display: "flex", flexDirection: "column" }}>
+                Video:
+                <span style={{ fontWeight: "700" }}>{item?.video_url}</span>
+              </p>
+              <p style={{ display: "flex", flexDirection: "column" }}>
+                Duration:
+                <span style={{ fontWeight: "700" }}>{item?.duration}</span>
+              </p>
+            </div>
+          ))}
+        </div>
+      ),
     },
     {
-      title: "Action",
+      title: "",
       dataIndex: "action",
       render: (_, record) => (
         <Space size="small">
@@ -259,16 +295,8 @@ const Recruitment = () => {
               showDrawer(), setEditRowSelected(record);
             }}
           >
-            <EditOutlined />
+            Thêm bài học
           </Button>
-          <Popconfirm
-            title="Chắc chắn xóa"
-            onConfirm={() => deleteRecruitment(record?.id)}
-          >
-            <Button type="primary" size="small">
-              <DeleteOutlined />
-            </Button>
-          </Popconfirm>
         </Space>
       ),
     },
@@ -286,28 +314,33 @@ const Recruitment = () => {
   return (
     <div>
       <div style={{ marginBottom: "30px", padding: "20px" }}>
-        <Button onClick={showDrawer}>Thêm mới</Button>
+        {/* <Button onClick={showDrawer}>Thêm mới</Button> */}
       </div>
       <Table
         style={{ padding: "0 20px", height: "100%" }}
         columns={columns}
-        dataSource={dataRecruitment}
+        dataSource={dataClassList}
         loading={loading}
+        expandable={{
+          expandedRowRender: (record) => (
+            <p
+              style={{
+                margin: 0,
+              }}
+            >
+              {record?.student_count}
+            </p>
+          ),
+        }}
       />
-      <Drawer
-        title={
-          !!editRowSelected ? "Update tin tuyển dụng" : "Tạo mới tin tuyển dụng"
-        }
-        onClose={onClose}
-        open={open}
-      >
-        <FormCecruitment
+      <Drawer title="Thêm khóa học" onClose={onClose} open={open}>
+        <FormClassList
           initForm={editRowSelected}
-          createRecruitment={createRecruitment}
-          updateRecruitment={updateRecruitment}
+          createClassList={createClassList}
+          updateClassList={updateClassList}
         />
       </Drawer>
     </div>
   );
 };
-export default Recruitment;
+export default ClassListDetails;
