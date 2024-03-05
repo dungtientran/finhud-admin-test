@@ -300,6 +300,7 @@ const Recruitment = () => {
         }
         onClose={onClose}
         open={open}
+        width={660}
       >
         <FormCecruitment
           initForm={editRowSelected}

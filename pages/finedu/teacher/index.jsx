@@ -236,21 +236,21 @@ const Teacher = () => {
       title: "Địa chỉ",
       dataIndex: "location",
       key: "location",
-      width: "",
+      width: "10%",
       ...getColumnSearchProps("location"),
     },
     {
       title: "Giới thiệu",
       dataIndex: "description",
       key: "description",
-      width: "",
+      width: "30%",
       ...getColumnSearchProps("description"),
     },
     {
       title: "Facebook",
       dataIndex: "facebook_url",
       key: "facebook_url",
-      width: "",
+      width: "5%",
       ...getColumnSearchProps("facebook_url"),
     },
     {
@@ -264,19 +264,21 @@ const Teacher = () => {
       title: "Linkedin",
       dataIndex: "linkedin_url",
       key: "linkedin_url",
-      width: "",
+      width: "10%",
       ...getColumnSearchProps("linkedin_url"),
     },
     {
       title: "Twitter",
       dataIndex: "twitter_url",
       key: "twitter_url",
-      width: "",
+      width: "10%",
       ...getColumnSearchProps("twitter_url"),
     },
     {
       title: "Action",
       dataIndex: "action",
+      width: "5%",
+
       render: (_, record) => (
         <Space size="small">
           <Button
@@ -325,6 +327,7 @@ const Teacher = () => {
         title={!!editRowSelected ? "Update giảng viên" : "Tạo mới giảng viên"}
         onClose={onClose}
         open={open}
+        width={660}
       >
         <Form
           initForm={editRowSelected}
